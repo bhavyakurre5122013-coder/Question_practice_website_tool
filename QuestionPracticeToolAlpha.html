@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Practice Tool</title>
+    <script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="S9c_K0EpNQzO1IG-zB7lW";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+    <style>
+        /* Modern advanced CSS with flexbox, grid, transitions, and responsive design */
+        :root {
+            --bg-primary: #f4f7fa;
+            --bg-secondary: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #ced4da;
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #444444;
+            --primary-color: #4dabf7;
+            --success-color: #4ade80;
+            --danger-color: #f87171;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header with Menu Button and Timer */
+        .header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        #timer-display {
+            font-size: 1em;
+            color: var(--primary-color);
+            display: none;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-btn:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0 0 20px 0;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .selection-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .selection-bar select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            min-width: 150px;
+        }
+
+        .selection-bar select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        #question-section {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            min-height: 50px;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            background: var(--bg-primary);
+            white-space: pre-wrap;
+            text-align: left;
+            position: relative;
+        }
+
+        #hint-box {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            background: rgba(0, 123, 255, 0.1);
+            display: none;
+        }
+
+        #notes-section {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        #save-notes-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .question-text {
+            white-space: pre-wrap;
+        }
+
+        .question-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 1.2em;
+        }
+
+        .bookmark {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        #answer-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            resize: vertical;
+            min-height: 100px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: border-color 0.3s;
+        }
+
+        #answer-box:focus {
+            border-color: var(--primary-color);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            color: white;
+        }
+
+        .buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        #prev-btn, #next-btn, #ans-btn {
+            background-color: var(--success-color);
+        }
+
+        #prev-btn:hover, #next-btn:hover, #ans-btn:hover {
+            background-color: #218838;
+        }
+
+        #actual-answer {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--success-color);
+            border-radius: 8px;
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            display: none;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        #correct-incorrect-counter {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            overflow: hidden;
+            display: flex;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.closed .sidebar-content {
+            display: none;
+        }
+
+        .sidebar-content {
+            width: calc(100% - 5px);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Scrollable main content */
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--bg-primary);
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 3px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: var(--border-color);
+            cursor: ew-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+            user-select: none;
+            z-index: 1001;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-menu {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .sidebar-menu-item {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu-item:hover {
+            background-color: var(--bg-primary);
+        }
+
+        .sidebar-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .dev-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-section {
+            padding: 10px 0;
+        }
+
+        .filter-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #dev-options {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+
+        #dev-options.active {
+            display: flex;
+        }
+
+        .dev-section {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .dev-section h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .dev-section input, .dev-section textarea {
+            padding: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .dev-section input {
+            width: 200px;
+        }
+
+        .dev-section textarea {
+            width: 100%;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .dev-section button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .dev-section button {
+            background-color: var(--primary-color);
+        }
+
+        .dev-section button:hover {
+            background-color: #0056b3;
+        }
+
+        .dev-section button.delete {
+            background-color: var(--danger-color);
+        }
+
+        .dev-section button.delete:hover {
+            background-color: #c82333;
+        }
+
+        .difficulty-stars {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .difficulty-stars .star {
+            cursor: pointer;
+            color: #ffd700;
+            font-size: 1.2em;
+        }
+
+        .sub-items {
+            margin-top: 10px;
+        }
+
+        .sub-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .sub-item input {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .header {
+                padding: 0 10px;
+            }
+
+            .sidebar {
+                width: 5px;
+            }
+
+            .selection-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .dev-section input {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+
+        .question-type-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question-type-checkboxes label {
+            display: flex;
+            align-items: center;
+        }
+        #progress-display {
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="resizer">|</div>
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <h2>Menu</h2>
+                <button class="close-btn" onclick="toggleSidebar()">×</button>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="sidebar-menu-item dev-toggle" onclick="toggleDevOptions()">
+                    <span>Developer Options</span>
+                    <span>▼</span>
+                </div>
+
+                <div class="sidebar-menu-item" onclick="toggleTheme()">
+                    <span>Switch to </span><span id="theme-label">Dark</span><span> Mode</span>
+                </div>
+
+                <div class="sidebar-menu-item" onclick="toggleDifficultyFilter()">Filter by Difficulty ▼</div>
+                <div id="difficulty-filters" style="display:none; padding:10px 0;">
+                     <label><input type="checkbox" id="filter-easy"> Easy</label>
+                     <label><input type="checkbox" id="filter-medium"> Medium</label>
+                     <label><input type="checkbox" id="filter-hard"> Hard</label>
+                </div>
+
+                <div class="filter-section">
+                    <label><input type="checkbox" id="filter-favorites"> Filter by Favorites</label>
+                </div>
+
+                <div class="sidebar-menu-item" onclick="toggleHintMode()">Hint Mode ▼</div>
+                <div id="hint-mode-section" style="display:none; padding:10px 0;">
+                    <label><input type="radio" name="hint-mode" value="hint"> Hint</label>
+                    <label><input type="radio" name="hint-mode" value="no-hint" checked> No Hint</label>
+                </div>
+
+                <div class="filter-section">
+                    <label><input type="checkbox" id="random-mode" onclick="toggleRandomMode()"> Random Question Mode</label>
+                    <div id="random-scope" style="display: none; margin-top: 10px;">
+                        <label><input type="radio" name="random-scope" value="exercise"> Exercise</label>
+                        <label><input type="radio" name="random-scope" value="chapter"> Chapter</label>
+                        <label><input type="radio" name="random-scope" value="subject"> Subject</label>
+                        <label><input type="radio" name="random-scope" value="all"> All Subjects</label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label><input type="checkbox" id="timer-mode" onclick="toggleTimerMode()"> Timer Mode</label>
+                </div>
+
+<div class="sidebar-menu-item" onclick="toggleProgressTracker()">Progress Tracker ▼</div>
+<div id="progress-tracker-section" style="display:none; padding:10px 0;">
+    <div id="progress-display"></div>
+    <select id="progress-scope">
+        <option value="exercise">Exercise</option>
+        <option value="chapter">Chapter</option>
+        <option value="subject">Subject</option>
+        <option value="all">All Subjects</option>
+    </select>
+    <button onclick="showProgress()">Show</button>
+</div>
+            </div>
+
+            <div class="scrollable-content">
+                <div id="dev-options">
+                    <!-- Subject Management -->
+                    <div class="dev-section">
+                        <h3>Add Subject</h3>
+                        <input type="text" id="add-subject-name" placeholder="Subject Name">
+                        <button onclick="toggleSubSubjects('add-subject')">Add Sub-Subjects</button>
+                        <div id="add-subject-subs" class="sub-items" style="display: none;"></div>
+                        <button onclick="addSubItem('add-subject')">Add More</button>
+                        <button onclick="addSubject()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Edit Subject</h3>
+                        <input type="text" id="edit-subject-old" placeholder="Old Subject Name">
+                        <input type="text" id="edit-subject-new" placeholder="New Subject Name">
+                        <button onclick="toggleSubSubjects('edit-subject')">Edit Sub-Subjects</button>
+                        <div id="edit-subject-subs" class="sub-items" style="display: none;"></div>
+                        <button onclick="addSubItem('edit-subject')">Add More</button>
+                        <button onclick="editSubject()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Delete Subject</h3>
+                        <input type="text" id="delete-subject-name" placeholder="Subject Name">
+                        <button class="delete" onclick="deleteSubject()">Delete</button>
+                    </div>
+
+                    <!-- Chapter Management -->
+                    <div class="dev-section">
+                        <h3>Add Chapter</h3>
+                        <input type="text" id="add-chapter-subject" placeholder="Subject Name">
+                        <input type="text" id="add-chapter-name" placeholder="Chapter Name">
+                        <button onclick="toggleSubChapters('add-chapter')">Add Sub-Chapters</button>
+                        <div id="add-chapter-subs" class="sub-items" style="display: none;"></div>
+                        <button onclick="addSubItem('add-chapter')">Add More</button>
+                        <button onclick="addChapter()">Save</button>
+                    </div>
+
+                     <div class="dev-section">
+                        <h3>Edit Chapter</h3>
+                        <input type="text" id="edit-chapter-subject" placeholder="Subject Name">
+                        <input type="text" id="edit-chapter-old" placeholder="Old Chapter Name">
+                        <input type="text" id="edit-chapter-new" placeholder="New Chapter Name">
+                               <button onclick="toggleSubChapters('edit-chapter')">Edit Sub-Chapters</button>
+                        <div id="edit-chapter-subs" class="sub-items" style="display: none;"></div>
+                        <button onclick="addSubItem('edit-chapter')">Add More</button>
+                        <button onclick="editChapter()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Delete Chapter</h3>
+                        <input type="text" id="delete-chapter-subject" placeholder="Subject Name">
+                        <input type="text" id="delete-chapter-name" placeholder="Chapter Name">
+                        <button class="delete" onclick="deleteChapter()">Delete</button>
+                    </div>
+
+                    <!-- Exercise Management -->
+                    <div class="dev-section">
+                        <h3>Add Exercise</h3>
+                        <input type="text" id="add-exercise-subject" placeholder="Subject Name">
+                        <input type="text" id="add-exercise-chapter" placeholder="Chapter Name">
+                        <input type="text" id="add-exercise-name" placeholder="Exercise Name">
+                        <button onclick="addExercise()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Edit Exercise</h3>
+                        <input type="text" id="edit-exercise-subject" placeholder="Subject Name">
+                        <input type="text" id="edit-exercise-chapter" placeholder="Chapter Name">
+                        <input type="text" id="edit-exercise-old" placeholder="Old Exercise Name">
+                        <input type="text" id="edit-exercise-new" placeholder="New Exercise Name">
+                        <button onclick="editExercise()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Delete Exercise</h3>
+                        <input type="text" id="delete-exercise-subject" placeholder="Subject Name">
+                        <input type="text" id="delete-exercise-chapter" placeholder="Chapter Name">
+                        <input type="text" id="delete-exercise-name" placeholder="Exercise Name">
+                        <button class="delete" onclick="deleteExercise()">Delete</button>
+                    </div>
+
+                    <!-- Question Management -->
+                    <div class="dev-section" id="add-question-section">
+                        <h3>Add Question</h3>
+                        <input type="text" id="add-question-subject" placeholder="Subject Name">
+                        <input type="text" id="add-question-chapter" placeholder="Chapter Name">
+                        <input type="text" id="add-question-exercise" placeholder="Exercise Name">
+                        <textarea id="add-question-text" placeholder="Question Text"></textarea>
+                        <textarea id="add-question-answer" placeholder="Correct Answer"></textarea>
+                        <div>Difficulty: <div class="difficulty-stars" id="add-difficulty-stars"><span class="star" data-level="1">☆</span><span class="star" data-level="2">☆</span><span class="star" data-level="3">☆</span></div></div>
+                        <input type="text" id="add-hint1" placeholder="Hint 1 (optional)">
+                        <input type="text" id="add-hint2" placeholder="Hint 2 (optional)">
+                        <input type="text" id="add-hint3" placeholder="Hint 3 (optional)">
+                        <div class="question-type-checkboxes">
+                            <label><input type="checkbox" class="q-type" value="text"> Text</label>
+                            <label><input type="checkbox" class="q-type" value="mcq"> MCQ</label>
+                            <label><input type="checkbox" class="q-type" value="fill"> Fill in Blanks</label>
+                            <label><input type="checkbox" class="q-type" value="label"> Labelling</label>
+                            <label><input type="checkbox" class="q-type" value="match"> Matching</label>
+                        </div>
+                        <button onclick="addQuestion()">Save</button>
+                    </div>
+
+                    <div class="dev-section" id="edit-question-section">
+                        <h3>Edit Question</h3>
+                        <input type="text" id="edit-question-subject" placeholder="Subject Name">
+                        <input type="text" id="edit-question-chapter" placeholder="Chapter Name">
+                        <input type="text" id="edit-question-exercise" placeholder="Exercise Name">
+                        <input type="text" id="edit-question-index" placeholder="Question Index (0-based)">
+                        <textarea id="edit-question-new-text" placeholder="New Question Text"></textarea>
+                        <textarea id="edit-question-new-answer" placeholder="New Correct Answer"></textarea>
+                        <div>Difficulty: <div class="difficulty-stars" id="edit-difficulty-stars"><span class="star" data-level="1">☆</span><span class="star" data-level="2">☆</span><span class="star" data-level="3">☆</span></div></div>
+                        <input type="text" id="edit-hint1" placeholder="Hint 1 (optional)">
+                        <input type="text" id="edit-hint2" placeholder="Hint 2 (optional)">
+                        <input type="text" id="edit-hint3" placeholder="Hint 3 (optional)">
+                        <div class="question-type-checkboxes">
+                            <label><input type="checkbox" class="q-type" value="text"> Text</label>
+                            <label><input type="checkbox" class="q-type" value="mcq"> MCQ</label>
+                            <label><input type="checkbox" class="q-type" value="fill"> Fill in Blanks</label>
+                            <label><input type="checkbox" class="q-type" value="label"> Labelling</label>
+                            <label><input type="checkbox" class="q-type" value="match"> Matching</label>
+                        </div>
+                        <button onclick="editQuestion()">Save</button>
+                    </div>
+
+                    <div class="dev-section">
+                        <h3>Delete Question</h3>
+                        <input type="text" id="delete-question-subject" placeholder="Subject Name">
+                        <input type="text" id="delete-question-chapter" placeholder="Chapter Name">
+                        <input type="text" id="delete-question-exercise" placeholder="Exercise Name">
+                        <input type="text" id="delete-question-index" placeholder="Question Index (0-based)">
+                        <button class="delete" onclick="deleteQuestion()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <span id="timer-display">00:00:00</span>
+        </div>
+        <h1>Question Practice Tool</h1>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+        <div class="selection-bar">
+            <select id="subject-select">
+                <option value="">Select Subject</option>
+            </select>
+            <select id="sub-subject-select" disabled style="display: none;">
+                <option value="">Select Sub-Subject</option>
+            </select>
+            <select id="chapter-select" disabled>
+                <option value="">Select Chapter</option>
+            </select>
+            <select id="sub-chapter-select" disabled style="display: none;">
+                <option value="">Select Sub-Chapter</option>
+            </select>
+            <select id="exercise-select" disabled>
+                <option value="">Select Exercise</option>
+            </select>
+        </div>
+
+        <div id="question-section">No question selected.</div>
+        <div id="hint-box"></div>
+
+        <textarea id="answer-box" placeholder="Type your answer here..."></textarea>
+
+        <div class="buttons">
+            <button id="prev-btn">Prev</button>
+            <button id="next-btn">Next</button>
+            <button id="ans-btn">Ans</button>
+        </div>
+
+        <div id="actual-answer"></div>
+
+        <div id="notes-section">
+            <textarea id="notes-textarea" placeholder="Add notes here..."></textarea>
+            <button id="save-notes-btn">Save Notes</button>
+        </div>
+
+        <div id="correct-incorrect-counter">Correct: 0 | Incorrect: 0</div>
+    </div>
+    
+    <script>
+// Theme management
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.getElementById('theme-label').textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+}
+
+function setTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-label').textContent = savedTheme === 'dark' ? 'Light' : 'Dark';
+}
+
+// Sidebar management
+let sidebarWidth = 300;
+const minOpenWidth = 100;
+const handleWidth = 5;
+let isResizing = false;
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('closed')) {
+        sidebar.style.width = `${sidebarWidth}px`;
+        sidebar.classList.remove('closed');
+    } else {
+        sidebarWidth = parseInt(sidebar.style.width) || sidebarWidth;
+        sidebar.style.width = `${handleWidth}px`;
+        sidebar.classList.add('closed');
+    }
+}
+
+function toggleDevOptions() {
+    const devOptions = document.getElementById('dev-options');
+    devOptions.classList.toggle('active');
+}
+
+// Data structure
+let data = JSON.parse(localStorage.getItem('questionPracticeTool')) || { subjects: {} };
+
+// Current states
+let currentSubject = '';
+let currentSubSubject = '';
+let currentChapter = '';
+let currentSubChapter = '';
+let currentExercise = '';
+let currentQuestionIndex = 0;
+let isFiltered = false;
+let filteredQuestions = [];
+let hintMode = 'no-hint';
+let randomMode = false;
+let randomScope = 'exercise';
+let timerInterval = null;
+let timerSeconds = 0;
+let correctCount = 0;
+let incorrectCount = 0;
+let attempted = new Set();
+
+// DOM elements
+const subjectSelect = document.getElementById('subject-select');
+const subSubjectSelect = document.getElementById('sub-subject-select');
+const chapterSelect = document.getElementById('chapter-select');
+const subChapterSelect = document.getElementById('sub-chapter-select');
+const exerciseSelect = document.getElementById('exercise-select');
+const questionSection = document.getElementById('question-section');
+const hintBox = document.getElementById('hint-box');
+const answerBox = document.getElementById('answer-box');
+const actualAnswer = document.getElementById('actual-answer');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const ansBtn = document.getElementById('ans-btn');
+const notesSection = document.getElementById('notes-section');
+const notesTextarea = document.getElementById('notes-textarea');
+const saveNotesBtn = document.getElementById('save-notes-btn');
+const timerDisplay = document.getElementById('timer-display');
+const correctIncorrectCounter = document.getElementById('correct-incorrect-counter');
+const progressDisplay = document.getElementById('progress-display');
+const progressScope = document.getElementById('progress-scope');
+const randomScopeDiv = document.getElementById('random-scope');
+
+// ==================== SUB-ITEM FUNCTIONS ====================
+function toggleSubSubjects(type) {
+    const subsDiv = document.getElementById(`${type}-subs`);
+    if (subsDiv.style.display === 'none') {
+        subsDiv.style.display = 'block';
+        if (subsDiv.children.length === 0) addSubItem(type);
+    } else {
+        subsDiv.style.display = 'none';
+    }
+}
+
+function toggleSubChapters(type) {
+    const subsDiv = document.getElementById(`${type}-subs`);
+    if (subsDiv.style.display === 'none') {
+        subsDiv.style.display = 'block';
+        if (subsDiv.children.length === 0) addSubItem(type);
+    } else {
+        subsDiv.style.display = 'none';
+    }
+}
+
+function addSubItem(prefix) {
+    const subsDiv = document.getElementById(`${prefix}-subs`);
+    const newItem = document.createElement('div');
+    newItem.className = 'sub-item';
+    newItem.innerHTML = `
+        <input type="text" placeholder="Sub Name">
+        <button type="button" onclick="this.parentNode.remove()">Remove</button>
+    `;
+    subsDiv.appendChild(newItem);
+}
+
+// ==================== LOAD FUNCTIONS ====================
+function loadSubjects() {
+    subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+    Object.keys(data.subjects).forEach(sub => {
+        subjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+    });
+    if (currentSubject) subjectSelect.value = currentSubject;
+    loadSubSubjects();
+    loadChapters();
+}
+
+function loadSubSubjects() {
+    subSubjectSelect.innerHTML = '<option value="">Select Sub-Subject</option>';
+    subSubjectSelect.style.display = 'none';
+    subSubjectSelect.disabled = true;
+    if (currentSubject && data.subjects[currentSubject]?.subs) {
+        Object.keys(data.subjects[currentSubject].subs).forEach(sub => {
+            subSubjectSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+        });
+        subSubjectSelect.style.display = 'block';
+        subSubjectSelect.disabled = false;
+        if (currentSubSubject) subSubjectSelect.value = currentSubSubject;
+    }
+    loadChapters();
+}
+
+function loadChapters() {
+    chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+    chapterSelect.disabled = !currentSubject;
+    let chapters = {};
+    if (currentSubject) {
+        if (currentSubSubject && data.subjects[currentSubject].subs[currentSubSubject]) {
+            chapters = data.subjects[currentSubject].subs[currentSubSubject].chapters || {};
+        } else {
+            chapters = data.subjects[currentSubject].chapters || {};
+        }
+    }
+    Object.keys(chapters).forEach(chap => {
+        chapterSelect.innerHTML += `<option value="${chap}">${chap}</option>`;
+    });
+    if (currentChapter) chapterSelect.value = currentChapter;
+    loadSubChapters();
+    loadExercises();
+}
+
+function loadSubChapters() {
+    subChapterSelect.innerHTML = '<option value="">Select Sub-Chapter</option>';
+    subChapterSelect.style.display = 'none';
+    subChapterSelect.disabled = true;
+    let chapterObj = {};
+    if (currentSubject && currentChapter) {
+        if (currentSubSubject) {
+            chapterObj = data.subjects[currentSubject].subs[currentSubSubject]?.chapters[currentChapter] || {};
+        } else {
+            chapterObj = data.subjects[currentSubject].chapters[currentChapter] || {};
+        }
+        if (chapterObj.subs) {
+            Object.keys(chapterObj.subs).forEach(sub => {
+                subChapterSelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+            });
+            subChapterSelect.style.display = 'block';
+            subChapterSelect.disabled = false;
+            if (currentSubChapter) subChapterSelect.value = currentSubChapter;
+        }
+    }
+    loadExercises();
+}
+
+function loadExercises() {
+    exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
+    exerciseSelect.disabled = !currentChapter || isFiltered;
+    let exercises = {};
+    if (currentSubject && currentChapter) {
+        let chapterObj = currentSubSubject ? 
+            data.subjects[currentSubject].subs[currentSubSubject]?.chapters[currentChapter] : 
+            data.subjects[currentSubject].chapters[currentChapter];
+        if (currentSubChapter && chapterObj?.subs) {
+            exercises = chapterObj.subs[currentSubChapter]?.exercises || {};
+        } else {
+            exercises = chapterObj?.exercises || {};
+        }
+    }
+    Object.keys(exercises).forEach(ex => {
+        exerciseSelect.innerHTML += `<option value="${ex}">${ex}</option>`;
+    });
+    if (currentExercise) exerciseSelect.value = currentExercise;
+    updateQuestionDisplay();
+}
+
+// ==================== GET FUNCTIONS ====================
+function getCurrentQuestions() {
+    try {
+        let obj = data.subjects[currentSubject];
+        if (currentSubSubject) obj = obj.subs[currentSubSubject];
+        obj = obj.chapters[currentChapter];
+        if (currentSubChapter) obj = obj.subs[currentSubChapter];
+        return obj.exercises[currentExercise]?.questions || [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function getCurrentQuestion() {
+      const questions = getCurrentQuestionList();
+    return questions[currentQuestionIndex];
+}
+
+function getCurrentQuestionList() {
+    if (isFiltered) {
+        return filteredQuestions.map(f => f.q);
+    } else {
+        const qs = getCurrentQuestions();
+        return randomMode ? shuffleQuestions(qs) : qs;
+    }
+}
+
+// ==================== CRUD FUNCTIONS ====================
+function addSubject() {
+    const name = document.getElementById('add-subject-name').value.trim();
+    const subsInputs = document.getElementById('add-subject-subs').querySelectorAll('input');
+    const subs = Array.from(subsInputs).map(i => i.value.trim()).filter(v => v);
+    
+    if (!name || data.subjects[name]) {
+        alert('Invalid or duplicate subject name.');
+        return;
+    }
+    
+    data.subjects[name] = { 
+        chapters: {}, 
+        subs: subs.length > 0 ? subs.reduce((acc, s) => { acc[s] = { chapters: {} }; return acc; }, {}) : null 
+    };
+    
+    saveData();
+    loadSubjects();
+    document.getElementById('add-subject-name').value = '';
+    document.getElementById('add-subject-subs').innerHTML = '';
+    document.getElementById('add-subject-subs').style.display = 'none';
+}
+
+function editSubject() {
+    const oldName = document.getElementById('edit-subject-old').value.trim();
+    const newName = document.getElementById('edit-subject-new').value.trim();
+    const subsInputs = document.getElementById('edit-subject-subs').querySelectorAll('input');
+    const subs = Array.from(subsInputs).map(i => i.value.trim()).filter(v => v);
+    
+    if (!oldName || !newName || !data.subjects[oldName] || data.subjects[newName]) {
+        alert('Invalid names or duplicate.');
+        return;
+    }
+    
+    const existingSubs = data.subjects[oldName].subs;
+    data.subjects[newName] = { 
+        chapters: data.subjects[oldName].chapters, 
+        subs: subs.length > 0 ? subs.reduce((acc, s) => { acc[s] = { chapters: {} }; return acc; }, {}) : existingSubs 
+    };
+    delete data.subjects[oldName];
+    
+    if (currentSubject === oldName) currentSubject = newName;
+    saveData();
+    loadSubjects();
+    document.getElementById('edit-subject-old').value = '';
+    document.getElementById('edit-subject-new').value = '';
+    document.getElementById('edit-subject-subs').innerHTML = '';
+    document.getElementById('edit-subject-subs').style.display = 'none';
+}
+
+function deleteSubject() {
+    const name = document.getElementById('delete-subject-name').value.trim();
+    if (!name || !data.subjects[name]) {
+        alert('Subject not found.');
+        return;
+    }
+    if (confirm(`Delete subject "${name}"?`)) {
+        delete data.subjects[name];
+        if (currentSubject === name) {
+            currentSubject = '';
+            currentSubSubject = '';
+            currentChapter = '';
+            currentSubChapter = '';
+            currentExercise = '';
+        }
+        saveData();
+        loadSubjects();
+        document.getElementById('delete-subject-name').value = '';
+    }
+}
+
+function addChapter() {
+    const subject = document.getElementById('add-chapter-subject').value.trim();
+    const name = document.getElementById('add-chapter-name').value.trim();
+    const subsInputs = document.getElementById('add-chapter-subs').querySelectorAll('input');
+    const subs = Array.from(subsInputs).map(i => i.value.trim()).filter(v => v);
+    
+    if (!subject || !name || !data.subjects[subject] || 
+        (currentSubSubject && !data.subjects[subject].subs[currentSubSubject])) {
+        alert('Invalid or duplicate chapter.');
+        return;
+    }
+    
+    const target = currentSubSubject ? data.subjects[subject].subs[currentSubSubject] : data.subjects[subject];
+    target.chapters[name] = { 
+        exercises: {}, 
+        subs: subs.length > 0 ? subs.reduce((acc, s) => { acc[s] = { exercises: {} }; return acc; }, {}) : null 
+    };
+    
+    saveData();
+    loadChapters();
+    document.getElementById('add-chapter-subject').value = '';
+    document.getElementById('add-chapter-name').value = '';
+    document.getElementById('add-chapter-subs').innerHTML = '';
+    document.getElementById('add-chapter-subs').style.display = 'none';
+}
+
+function editChapter() {
+    const subject = document.getElementById('edit-chapter-subject').value.trim();
+    const oldName = document.getElementById('edit-chapter-old').value.trim();
+    const newName = document.getElementById('edit-chapter-new').value.trim();
+    const subsInputs = document.getElementById('edit-chapter-subs').querySelectorAll('input');
+    const subs = Array.from(subsInputs).map(i => i.value.trim()).filter(v => v);
+    
+    if (!subject || !oldName || !newName || 
+        (currentSubSubject && !data.subjects[subject].subs[currentSubSubject]) ||
+        (!currentSubSubject && !data.subjects[subject].chapters[oldName]) ||
+        (currentSubSubject && data.subjects[subject].subs[currentSubSubject].chapters[newName]) ||
+        (!currentSubSubject && data.subjects[subject].chapters[newName])) {
+        alert('Invalid names or duplicate.');
+        return;
+    }
+    
+    const target = currentSubSubject ? data.subjects[subject].subs[currentSubSubject] : data.subjects[subject];
+    const existingSubs = target.chapters[oldName].subs;
+    target.chapters[newName] = { 
+        exercises: target.chapters[oldName].exercises, 
+        subs: subs.length > 0 ? subs.reduce((acc, s) => { acc[s] = { exercises: {} }; return acc; }, {}) : existingSubs 
+    };
+    delete target.chapters[oldName];
+    
+    if (currentChapter === oldName) currentChapter = newName;
+    saveData();
+    loadChapters();
+    document.getElementById('edit-chapter-subject').value = '';
+    document.getElementById('edit-chapter-old').value = '';
+    document.getElementById('edit-chapter-new').value = '';
+    document.getElementById('edit-chapter-subs').innerHTML = '';
+    document.getElementById('edit-chapter-subs').style.display = 'none';
+}
+
+function deleteChapter() {
+    const subject = document.getElementById('delete-chapter-subject').value.trim();
+    const name = document.getElementById('delete-chapter-name').value.trim();
+    
+    if (!subject || !name || 
+        (currentSubSubject && !data.subjects[subject].subs[currentSubSubject]?.chapters[name]) ||
+        (!currentSubSubject && !data.subjects[subject].chapters[name])) {
+        alert('Chapter not found.');
+        return;
+    }
+    
+    if (confirm(`Delete chapter "${name}"?`)) {
+        const target = currentSubSubject ? data.subjects[subject].subs[currentSubSubject] : data.subjects[subject];
+        delete target.chapters[name];
+        
+        if (currentChapter === name) {
+            currentChapter = '';
+            currentSubChapter = '';
+            currentExercise = '';
+        }
+        saveData();
+        loadChapters();
+        document.getElementById('delete-chapter-subject').value = '';
+        document.getElementById('delete-chapter-name').value = '';
+    }
+}
+
+function addExercise() {
+    const subject = document.getElementById('add-exercise-subject').value.trim();
+    const chapter = document.getElementById('add-exercise-chapter').value.trim();
+    const name = document.getElementById('add-exercise-name').value.trim();
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !name || !chapterObj || chapterObj.exercises[name]) {
+        alert('Invalid or duplicate exercise.');
+        return;
+    }
+    
+    chapterObj.exercises[name] = { questions: [] };
+    saveData();
+    loadExercises();
+    document.getElementById('add-exercise-subject').value = '';
+    document.getElementById('add-exercise-chapter').value = '';
+    document.getElementById('add-exercise-name').value = '';
+}
+
+function editExercise() {
+    const subject = document.getElementById('edit-exercise-subject').value.trim();
+    const chapter = document.getElementById('edit-exercise-chapter').value.trim();
+    const oldName = document.getElementById('edit-exercise-old').value.trim();
+    const newName = document.getElementById('edit-exercise-new').value.trim();
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !oldName || !newName || !chapterObj || 
+        !chapterObj.exercises[oldName] || chapterObj.exercises[newName]) {
+        alert('Invalid names or duplicate.');
+        return;
+    }
+    
+    chapterObj.exercises[newName] = chapterObj.exercises[oldName];
+    delete chapterObj.exercises[oldName];
+    
+    if (currentExercise === oldName) currentExercise = newName;
+    saveData();
+    loadExercises();
+    document.getElementById('edit-exercise-subject').value = '';
+    document.getElementById('edit-exercise-chapter').value = '';
+    document.getElementById('edit-exercise-old').value = '';
+    document.getElementById('edit-exercise-new').value = '';
+}
+
+function deleteExercise() {
+    const subject = document.getElementById('delete-exercise-subject').value.trim();
+    const chapter = document.getElementById('delete-exercise-chapter').value.trim();
+    const name = document.getElementById('delete-exercise-name').value.trim();
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !name || !chapterObj || !chapterObj.exercises[name]) {
+        alert('Exercise not found.');
+        return;
+    }
+    
+    if (confirm(`Delete exercise "${name}"?`)) {
+        delete chapterObj.exercises[name];
+        if (currentExercise === name) currentExercise = '';
+        saveData();
+        loadExercises();
+        document.getElementById('delete-exercise-subject').value = '';
+        document.getElementById('delete-exercise-chapter').value = '';
+        document.getElementById('delete-exercise-name').value = '';
+    }
+}
+
+function addQuestion() {
+    const subject = document.getElementById('add-question-subject').value.trim();
+    const chapter = document.getElementById('add-question-chapter').value.trim();
+    const exercise = document.getElementById('add-question-exercise').value.trim();
+    const text = document.getElementById('add-question-text').value;
+    const answer = document.getElementById('add-question-answer').value;
+    const hints = [
+        document.getElementById('add-hint1').value.trim(),
+        document.getElementById('add-hint2').value.trim(),
+        document.getElementById('add-hint3').value.trim()
+    ].filter(h => h);
+    const types = Array.from(document.querySelectorAll('#add-question-section .q-type:checked')).map(cb => cb.value);
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !exercise || !text || 
+        !chapterObj?.exercises[exercise]) {
+        alert('Invalid inputs or path not found.');
+        return;
+    }
+    chapterObj.exercises[exercise].questions.push({ 
+        text, answer, difficulty: addDifficulty, bookmark: false, 
+        notes: '', attempted: false, hints, types 
+    });
+    
+    saveData();
+    updateQuestionDisplay();
+    applyFilters();
+    document.getElementById('add-question-subject').value = '';
+    document.getElementById('add-question-chapter').value = '';
+    document.getElementById('add-question-exercise').value = '';
+    document.getElementById('add-question-text').value = '';
+    document.getElementById('add-question-answer').value = '';
+    document.getElementById('add-hint1').value = '';
+    document.getElementById('add-hint2').value = '';
+    document.getElementById('add-hint3').value = '';
+    document.querySelectorAll('#add-question-section .q-type').forEach(cb => cb.checked = false);
+    addDifficulty = 0;
+    const addStars = document.getElementById('add-difficulty-stars').querySelectorAll('.star');
+    addStars.forEach(s => s.textContent = '☆');
+}
+
+function editQuestion() {
+    const subject = document.getElementById('edit-question-subject').value.trim();
+    const chapter = document.getElementById('edit-question-chapter').value.trim();
+    const exercise = document.getElementById('edit-question-exercise').value.trim();
+    const index = parseInt(document.getElementById('edit-question-index').value.trim(), 10);
+    const newText = document.getElementById('edit-question-new-text').value;
+    const newAnswer = document.getElementById('edit-question-new-answer').value;
+    const hints = [
+        document.getElementById('edit-hint1').value.trim(),
+        document.getElementById('edit-hint2').value.trim(),
+        document.getElementById('edit-hint3').value.trim()
+    ].filter(h => h);
+    const types = Array.from(document.querySelectorAll('#edit-question-section .q-type:checked')).map(cb => cb.value);
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !exercise || isNaN(index) || !newText || 
+        !chapterObj?.exercises[exercise]) {
+        alert('Invalid inputs or path not found.');
+        return;
+    }
+    
+    const questions = chapterObj.exercises[exercise].questions;
+    if (index < 0 || index >= questions.length) {
+        alert('Invalid question index.');
+        return;
+    }
+    
+    questions[index].text = newText;
+    questions[index].answer = newAnswer;
+    if (editDifficulty > 0) questions[index].difficulty = editDifficulty;
+    if (hints.length > 0) questions[index].hints = hints;
+    if (types.length > 0) questions[index].types = types;
+    
+    saveData();
+    updateQuestionDisplay();
+    applyFilters();
+    document.getElementById('edit-question-subject').value = '';
+    document.getElementById('edit-question-chapter').value = '';
+    document.getElementById('edit-question-exercise').value = '';
+    document.getElementById('edit-question-index').value = '';
+    document.getElementById('edit-question-new-text').value = '';
+    document.getElementById('edit-question-new-answer').value = '';
+    document.getElementById('edit-hint1').value = '';
+    document.getElementById('edit-hint2').value = '';
+    document.getElementById('edit-hint3').value = '';
+    document.querySelectorAll('#edit-question-section .q-type').forEach(cb => cb.checked = false);
+    editDifficulty = 0;
+    const editStars = document.getElementById('edit-difficulty-stars').querySelectorAll('.star');
+    editStars.forEach(s => s.textContent = '☆');
+}
+
+function deleteQuestion() {
+    const subject = document.getElementById('delete-question-subject').value.trim();
+    const chapter = document.getElementById('delete-question-chapter').value.trim();
+    const exercise = document.getElementById('delete-question-exercise').value.trim();
+    const index = parseInt(document.getElementById('delete-question-index').value.trim(), 10);
+    
+    let chapterObj = currentSubSubject ? 
+        data.subjects[subject]?.subs[currentSubSubject]?.chapters[chapter] : 
+        data.subjects[subject]?.chapters[chapter];
+    
+    if (currentSubChapter) {
+        chapterObj = chapterObj?.subs[currentSubChapter];
+    }
+    
+    if (!subject || !chapter || !exercise || isNaN(index) || 
+        !chapterObj?.exercises[exercise]) {
+        alert('Invalid inputs or path not found.');
+        return;
+    }
+    
+    const questions = chapterObj.exercises[exercise].questions;
+    if (index < 0 || index >= questions.length) {
+        alert('Invalid question index.');
+        return;
+    }
+    
+    if (confirm(`Delete question at index ${index}?`)) {
+        questions.splice(index, 1);
+        saveData();
+        if (currentQuestionIndex >= questions.length) currentQuestionIndex = questions.length - 1;
+        updateQuestionDisplay();
+        applyFilters();
+        document.getElementById('delete-question-subject').value = '';
+        document.getElementById('delete-question-chapter').value = '';
+        document.getElementById('delete-question-exercise').value = '';
+        document.getElementById('delete-question-index').value = '';
+          }
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function saveData() {
+    localStorage.setItem('questionPracticeTool', JSON.stringify(data));
+}
+
+function shuffleQuestions(questions) {
+    let shuffled = [...questions];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function checkAnswer(userAnswer, correctAnswer) {
+    return userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+}
+
+function setupDifficultyStars(prefix) {
+    const starsContainer = document.getElementById(`${prefix}-difficulty-stars`);
+    const stars = starsContainer.querySelectorAll('.star');
+    let difficulty = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            difficulty = parseInt(star.dataset.level);
+            updateStars(stars, difficulty);
+            if (prefix === 'add') addDifficulty = difficulty;
+            if (prefix === 'edit') editDifficulty = difficulty;
+        });
+    });
+
+    function updateStars(stars, diff) {
+        stars.forEach((s, i) => {
+            s.textContent = (i < diff) ? '★' : '☆';
+        });
+    }
+}
+
+let addDifficulty = 0;
+let editDifficulty = 0;
+
+function setupResizer() {
+    const sidebar = document.getElementById('sidebar');
+    const resizer = document.querySelector('.resizer');
+    let startX, startWidth;
+
+    const startResize = (e) => {
+        isResizing = true;
+        startX = e.clientX || e.touches[0].clientX;
+        startWidth = parseInt(getComputedStyle(sidebar).width, 10);
+        document.body.style.cursor = 'ew-resize';
+    };
+
+    const doResize = (e) => {
+        if (!isResizing) return;
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        let newWidth = startWidth + clientX - startX;
+        if (newWidth < handleWidth) newWidth = handleWidth;
+        if (newWidth > 600) newWidth = 600;
+        sidebar.style.width = `${newWidth}px`;
+    };
+
+    const stopResize = () => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.style.cursor = '';
+        let newWidth = parseInt(sidebar.style.width);
+        if (newWidth < minOpenWidth) {
+            newWidth = handleWidth;
+            sidebar.classList.add('closed');
+        } else {
+            sidebar.classList.remove('closed');
+            sidebarWidth = newWidth;
+        }
+        sidebar.style.width = `${newWidth}px`;
+    };
+
+    resizer.addEventListener('mousedown', startResize);
+    resizer.addEventListener('touchstart', startResize, { passive: false });
+    document.addEventListener('mousemove', doResize);
+    document.addEventListener('touchmove', doResize, { passive: false });
+    document.addEventListener('mouseup', stopResize);
+    document.addEventListener('touchend', stopResize);
+}
+
+function updateQuestionDisplay() {
+    actualAnswer.style.display = 'none';
+    answerBox.value = '';
+    notesSection.style.display = 'none';
+    if (!currentSubject || !currentChapter) {
+        questionSection.innerHTML = 'No question selected.';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        ansBtn.disabled = true;
+        return;
+    }
+
+    let questions = getCurrentQuestionList();
+    if (!questions || questions.length === 0) {
+        questionSection.innerHTML = 'No questions available.';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        ansBtn.disabled = true;
+        return;
+    }
+
+    currentQuestionIndex = Math.max(0, Math.min(currentQuestionIndex, questions.length - 1));
+    const q = questions[currentQuestionIndex];
+    const diff = q.difficulty || 0;
+    let starsHTML = '';
+    for (let i = 1; i <= 3; i++) {
+        starsHTML += `<span class="stars">${i <= diff ? '★' : '☆'}</span>`;
+    }
+    let questionHTML = `<div class="question-text">${q.text || 'No question text.'}</div>`;
+    questionSection.innerHTML = `
+        ${questionHTML}
+        <div class="question-controls">
+            <div class="stars">${starsHTML}</div>
+            <span id="bookmark-heart" class="bookmark">${q.bookmark ? '🖤' : '🤍'}</span>
+        </div>
+    `;
+    document.getElementById('bookmark-heart').addEventListener('click', toggleBookmark);
+    
+    if (hintMode === 'hint' && q.hints && q.hints.length > 0) {
+        hintBox.innerHTML = 'Hints: ' + q.hints.join(', ');
+        hintBox.style.display = 'block';
+    } else {
+        hintBox.style.display = 'none';
+    }
+    notesTextarea.value = q.notes || '';
+    prevBtn.disabled = currentQuestionIndex === 0;
+    nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+    ansBtn.disabled = false;
+}
+
+function toggleBookmark() {
+    const q = getCurrentQuestion();
+    q.bookmark = !q.bookmark;
+    saveData();
+    updateQuestionDisplay();
+}
+
+function applyFilters() {
+    if (!currentSubject || !currentChapter) return;
+    const easy = document.getElementById('filter-easy').checked;
+    const medium = document.getElementById('filter-medium').checked;
+    const hard = document.getElementById('filter-hard').checked;
+    const favorites = document.getElementById('filter-favorites').checked;
+
+    const selectedDiffs = [];
+    if (easy) selectedDiffs.push(1);
+    if (medium) selectedDiffs.push(2);
+    if (hard) selectedDiffs.push(3);
+
+    const hasDiffFilter = selectedDiffs.length > 0;
+    const hasFavFilter = favorites;
+
+    if (!hasDiffFilter && !hasFavFilter) {
+        isFiltered = false;
+        exerciseSelect.disabled = false;
+        loadExercises();
+        updateQuestionDisplay();
+        return;
+    }
+
+    let allQuestions = [];
+    let chapterObj = currentSubSubject ? data.subjects[currentSubject].subs[currentSubSubject].chapters[currentChapter] : data.subjects[currentSubject].chapters[currentChapter];
+    if (currentSubChapter) chapterObj = chapterObj.subs[currentSubChapter];
+    Object.keys(chapterObj.exercises).forEach(ex => {
+        chapterObj.exercises[ex].questions.forEach((q, idx) => {
+            allQuestions.push({ q, exercise: ex, index: idx });
+        });
+    });
+
+    filteredQuestions = allQuestions.filter(({ q }) => {
+        const diffMatch = !hasDiffFilter || selectedDiffs.includes(q.difficulty || 0);
+        const favMatch = !hasFavFilter || q.bookmark === true;
+        return diffMatch && favMatch;
+    });
+
+    isFiltered = true;
+    currentExercise = '';
+    exerciseSelect.value = '';
+    exerciseSelect.disabled = true;
+    currentQuestionIndex = 0;
+    updateQuestionDisplay();
+}
+// ==================== MODE FUNCTIONS ====================
+function setHintMode(mode) {
+    hintMode = mode;
+    updateQuestionDisplay();
+}
+
+function toggleRandomMode() {
+    randomMode = document.getElementById('random-mode').checked;
+    randomScopeDiv.style.display = randomMode ? 'block' : 'none';
+    updateQuestionDisplay();
+}
+
+function toggleTimerMode() {
+    const checked = document.getElementById('timer-mode').checked;
+    if (checked) {
+        timerDisplay.style.display = 'inline';
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            timerDisplay.textContent = new Date(timerSeconds * 1000).toISOString().substr(11, 8);
+        }, 1000);
+    } else {
+        clearInterval(timerInterval);
+        timerSeconds = 0;
+        timerDisplay.style.display = 'none';
+        timerDisplay.textContent = '00:00:00';
+    }
+}
+
+function showProgress() {
+    const scope = progressScope.value;
+    let total = 0, attemptedCount = 0;
+    
+    if (scope === 'exercise' && currentExercise) {
+        total = getCurrentQuestions().length;
+        getCurrentQuestions().forEach((q, i) => {
+            if (q.attempted || attempted.has(`${currentSubject}:${currentSubSubject || ''}:${currentChapter}:${currentSubChapter || ''}:${currentExercise}:${i}`)) 
+                attemptedCount++;
+        });
+    } else if (scope === 'chapter' && currentChapter) {
+        let chapterObj = currentSubSubject ? data.subjects[currentSubject].subs[currentSubSubject].chapters[currentChapter] : data.subjects[currentSubject].chapters[currentChapter];
+        if (currentSubChapter) chapterObj = chapterObj.subs[currentSubChapter];
+        Object.values(chapterObj.exercises).forEach(ex => {
+            total += ex.questions.length;
+            ex.questions.forEach((q, i) => {
+                if (q.attempted) attemptedCount++;
+            });
+        });
+    }
+    
+    progressDisplay.innerHTML = `<strong>${attemptedCount} / ${total} (${Math.round(attemptedCount/total*100)}%)</strong>`;
+}
+
+// ==================== EVENT LISTENERS ====================
+function setupListeners() {
+    subjectSelect.addEventListener('change', (e) => {
+        currentSubject = e.target.value;
+        currentSubSubject = '';
+        currentChapter = '';
+        currentSubChapter = '';
+        currentExercise = '';
+        currentQuestionIndex = 0;
+        isFiltered = false;
+        loadSubSubjects();
+        loadChapters();
+        applyFilters();
+    });
+
+    subSubjectSelect.addEventListener('change', (e) => {
+        currentSubSubject = e.target.value;
+        currentChapter = '';
+        currentSubChapter = '';
+        currentExercise = '';
+        currentQuestionIndex = 0;
+        loadChapters();
+        applyFilters();
+    });
+
+    chapterSelect.addEventListener('change', (e) => {
+        currentChapter = e.target.value;
+        currentSubChapter = '';
+        currentExercise = '';
+        currentQuestionIndex = 0;
+        loadSubChapters();
+        loadExercises();
+        applyFilters();
+    });
+
+    subChapterSelect.addEventListener('change', (e) => {
+        currentSubChapter = e.target.value;
+        currentExercise = '';
+        currentQuestionIndex = 0;
+        loadExercises();
+    });
+
+    exerciseSelect.addEventListener('change', (e) => {
+        currentExercise = e.target.value;
+        currentQuestionIndex = 0;
+        updateQuestionDisplay();
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            updateQuestionDisplay();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const questions = getCurrentQuestionList();
+        if (questions && currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            updateQuestionDisplay();
+        }
+    });
+
+    ansBtn.addEventListener('click', () => {
+        const questions = getCurrentQuestionList();
+        if (questions && currentExercise) {
+            const q = questions[currentQuestionIndex];
+            actualAnswer.textContent = q.answer || 'No answer provided.';
+            actualAnswer.style.display = 'block';
+            notesSection.style.display = 'block';
+            notesTextarea.value = q.notes || '';
+            
+            const isCorrect = checkAnswer(answerBox.value, q.answer);
+            if (isCorrect) correctCount++; else incorrectCount++;
+            correctIncorrectCounter.textContent = `Correct: ${correctCount} | Incorrect: ${incorrectCount}`;
+            
+            const key = `${currentSubject}:${currentSubSubject || ''}:${currentChapter}:${currentSubChapter || ''}:${currentExercise}:${currentQuestionIndex}`;
+            attempted.add(key);
+            q.attempted = true;
+            
+            saveData();
+        }
+    });
+
+    saveNotesBtn.addEventListener('click', () => {
+        const q = getCurrentQuestion();
+        if (q) {
+            q.notes = notesTextarea.value;
+            saveData();
+        }
+    });
+
+    document.getElementById('filter-easy').addEventListener('change', applyFilters);
+    document.getElementById('filter-medium').addEventListener('change', applyFilters);
+    document.getElementById('filter-hard').addEventListener('change', applyFilters);
+    
+    document.getElementById('filter-favorites').addEventListener('change', applyFilters);
+
+    document.querySelectorAll('input[name="random-scope"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            randomScope = e.target.value;
+            if (randomMode) updateQuestionDisplay();
+        });
+    });
+}
+
+// ==================== INIT ====================
+function init() {
+    setTheme();
+    setupDifficultyStars('add');
+    setupDifficultyStars('edit');
+    setupResizer();
+    setupListeners();
+    document.getElementById('sidebar').style.width = `${handleWidth}px`;
+    document.getElementById('sidebar').classList.add('closed');
+    loadSubjects();
+    updateQuestionDisplay();
+    correctIncorrectCounter.textContent = `Correct: ${correctCount} | Incorrect: ${incorrectCount}`;
+}
+// Toggle Functions
+function toggleDifficultyFilter() {
+    const div = document.getElementById('difficulty-filters');
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleHintMode() {
+    const div = document.getElementById('hint-mode-section');
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+    setHintMode(document.querySelector('input[name="hint-mode"]:checked').value);
+}
+
+document.querySelectorAll('input[name="hint-mode"]').forEach(radio => {
+    radio.addEventListener('change', (e) => setHintMode(e.target.value));
+});
+function toggleProgressTracker() {
+    const div = document.getElementById('progress-tracker-section');
+    div.style.display = div.style.display === 'none' ? 'block' : 'none';
+}
+init();
+</script>
+</body>
+</html
